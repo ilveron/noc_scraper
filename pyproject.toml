@@ -1,0 +1,24 @@
+[project]
+name = "noc-scraper"
+version = "0.1.0"
+description = "A python web scraper to keep track of freshly added cameras and lenses on newoldcamera.com"
+authors = [
+    {name = "Alessandro Monetti",email = "alessandromonetti@outlook.it"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beautifulsoup4 (>=4.13.4,<5.0.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "pandas (>=2.2.3,<3.0.0)",
+    "rich (>=14.0.0,<15.0.0)",
+    "urllib3 (>=2.4.0,<3.0.0)",
+]
+
+[tool.poetry]
+packages = [{include = "noc_scraper", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
