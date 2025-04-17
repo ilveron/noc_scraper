@@ -248,7 +248,16 @@ def get_telegram_credentials(filename: str) -> dict[str, str]:
         data = json.loads(f.read())
     return data
     
+'''
+The following function sends a message to a Telegram chat using the Telegram Bot API.
+It constructs the URL for sending the message and sends a POST request with the message payload.
 
+message: The message to be sent.
+chat_id: The chat ID of the recipient.
+api_key: The API key of the Telegram bot.
+parse_mode: The parse mode for the message (default is "HTML").
+The function returns the response from the Telegram API as a dictionary.
+'''
 def send_telegram_message(message: str, chat_id: str, api_key: str, parse_mode = "HTML") -> dict:
     url = f"https://api.telegram.org/bot{api_key}/sendMessage"
     payload = {
@@ -368,10 +377,15 @@ def main():
     original_brands_data = get_brands_data(brands_payloads)
     original_brands_dataframes = convert_to_dataframe(original_brands_data)
 
+    # TODO: Remove this, it's just for testing purposes
+    # Leave only 5 rows
+    #for brand, df in original_brands_dataframes.items():
+    #    original_brands_dataframes[brand] = df.head(5)
+
     try:
         while True != False:
             # Once every SLEEP_TIME seconds
-            time.sleep(SLEEP_TIME)
+            time.sleep(5)
 
             brands_data = get_brands_data(brands_payloads)
             brands_dataframes = convert_to_dataframe(brands_data)
@@ -390,7 +404,7 @@ def main():
                     # WE HAVE NEW ADDITIONS
                     # console.log(f"New additions for the brand [i][magenta]{brand}[/magenta][/i]:", style=NEW_COLOR)
                     # Print new additions
-                    new_additions = df[df.ID.isin(diff_ids)]
+                    new_additions = df[df.ID.isin(diff_ids)].copy()
 
                     # Merge "prezzopromozione" and "prezzovendita" so that if the promotional price is greater than 0, it replaces the original price, otherwise it keeps the original price  
                     new_additions["prezzovendita"] = new_additions.apply(
@@ -404,7 +418,7 @@ def main():
                     
                     # Notificate to telegram
                     message = generate_message(brand, new_additions)
-                    console.log("Telegram response:", send_telegram_message(message=message, chat_id=telegram_credentials["chat_id"], api_key=telegram_credentials["api_key"]))
+                    send_telegram_message(message, telegram_credentials["chat_id"], telegram_credentials["api_key"])
                 else:
                     console.log(f"No new additions for the brand [i][magenta]{brand}[/magenta][/i]", style=INFO_COLOR)
             
