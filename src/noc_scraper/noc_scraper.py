@@ -370,22 +370,23 @@ def main():
     console.print()
 
     # Get API payloads
-    brands_payloads = build_payloads(brand_names=desired_brands, item_type="OB", item_status="Usato")
-    
+    payload_item_type = "CO" if item_type == "camera" else "OB"
+    brands_payloads = build_payloads(brand_names=desired_brands, item_type=payload_item_type, item_status="Usato")
+
     ### DATA HANDLING
     # We take starting data for each brand so that we can compare it later
     original_brands_data = get_brands_data(brands_payloads)
     original_brands_dataframes = convert_to_dataframe(original_brands_data)
 
     # TODO: Remove this, it's just for testing purposes
-    # Leave only 5 rows
+    # Delete last 5 rows from each brand dataframe
     #for brand, df in original_brands_dataframes.items():
-    #    original_brands_dataframes[brand] = df.head(5)
+    #    original_brands_dataframes[brand] = df[:-5]
 
     try:
         while True != False:
             # Once every SLEEP_TIME seconds
-            time.sleep(5)
+            time.sleep(60)
 
             brands_data = get_brands_data(brands_payloads)
             brands_dataframes = convert_to_dataframe(brands_data)

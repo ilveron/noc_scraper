@@ -59,4 +59,29 @@ Per utilizzare il bot telegram è necessario creare un bot e ottenere un token. 
 
 
 ## Il software (WORK IN PROGRESS)
+### Scelta tipologia di prodotto
+Una volta avviato il programma, si presenta un menu con le seguenti opzioni:
 ![banner](/imgs/program_start.png)
+
+0. **Exit**: per uscire dal programma.
+1. **Cameras**: per mostrare i marchi delle fotocamere.
+2. **Lenses**: per mostrare i marchi degli obiettivi.
+
+Ogni ulteriore input verrà ignorato e verrà richiesto di selezionare un'opzione valida.
+
+### Scelta marchio
+Una volta selezionata la tipologia di prodotto, viene mostrato un elenco di marchi disponibili. Ad esempio, se si sceglie "Cameras", verrà visualizzato un elenco di marchi di fotocamere.
+![brand selection](/imgs/brands_selection.png)
+
+I marchi sono numerati e l'utente può selezionare un marchio inserendo il numero corrispondente. L'utente può anche digitare più marchi separati da uno spazio. 
+
+Ad esempio, se si desidera selezionare i marchi 1 e 3, è possibile digitare `"1 3"` e premere invio. Se si desidera selezionare solo un marchio, è possibile digitare il numero corrispondente e premere invio.
+
+Se non sarà valido almeno uno dei numeri inseriti, verrà visualizzato un avviso e verrà richiesto di selezionare almeno un marchio valido.
+
+I marchi non validi verranno ignorati e il programma procederà con i marchi validi selezionati.
+
+### Nuove aggiunte
+Nel caso in cui in uno dei marchi selezionati siano stati aggiunti nuovi prodotti, verrà visualizzata una tabella con i dettagli dei nuovi prodotti.
+
+![new products](/imgs/new_additions.png)
