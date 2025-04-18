@@ -67,7 +67,7 @@ Una volta avviato il programma, si presenta un menu con le seguenti opzioni:
 1. **Cameras**: per mostrare i marchi delle fotocamere.
 2. **Lenses**: per mostrare i marchi degli obiettivi.
 
-Ogni ulteriore input verrà ignorato e verrà richiesto di selezionare un'opzione valida.
+Ogni ulteriore input è ignorato ed è richiesto di selezionare un'opzione valida.
 
 ### Scelta marchio
 Una volta selezionata la tipologia di prodotto, viene mostrato un elenco di marchi disponibili. Ad esempio, se si sceglie "Cameras", verrà visualizzato un elenco di marchi di fotocamere.
@@ -77,11 +77,17 @@ I marchi sono numerati e l'utente può selezionare un marchio inserendo il numer
 
 Ad esempio, se si desidera selezionare i marchi 1 e 3, è possibile digitare `"1 3"` e premere invio. Se si desidera selezionare solo un marchio, è possibile digitare il numero corrispondente e premere invio.
 
-Se non sarà valido almeno uno dei numeri inseriti, verrà visualizzato un avviso e verrà richiesto di selezionare almeno un marchio valido.
+Se non è valido almeno uno dei numeri inseriti, è visualizzato un avviso ed è richiesto di selezionare almeno un marchio valido.
 
-I marchi non validi verranno ignorati e il programma procederà con i marchi validi selezionati.
+I marchi non validi sono ignorati e il programma procede al tracking dei marchi validi selezionati.
+
+### Tracking
+Una volta selezionati i marchi, il programma inizia a monitorare i nuovi prodotti. Durante il monitoraggio, il programma verifica se ci sono nuovi prodotti disponibili per i marchi selezionati.
+![tracking](/imgs/select_type_and_brands.png)
 
 ### Nuove aggiunte
 Nel caso in cui in uno dei marchi selezionati siano stati aggiunti nuovi prodotti, verrà visualizzata una tabella con i dettagli dei nuovi prodotti.
 
 ![new products](/imgs/new_additions.png)
+
+Se vengono trovati nuovi prodotti, il programma invia una notifica al bot telegram con i dettagli dei nuovi prodotti.
