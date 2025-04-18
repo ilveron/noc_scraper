@@ -38,7 +38,7 @@ Per attivare l'ambiente virtuale, esegui:
 poetry env activate
 ```
 
-Per eseguire il programma, utilizza il comando:
+Per eseguire il programma, utilizza il comando (assicurati di lanciarlo all'interno di `src/noc_scraper`):
 ```bash
 poetry run python noc_scraper.py
 ```
