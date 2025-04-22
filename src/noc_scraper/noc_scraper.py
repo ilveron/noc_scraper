@@ -3,10 +3,15 @@ import json
 
 from bs4 import BeautifulSoup
 from rich.console import Console
+from rich.progress import Progress
 from rich.table import Table
 from pandas import *
 from urllib.parse import quote_plus
 import time
+
+from datetime import timedelta
+from rich.live import Live
+from rich.panel import Panel
 
 set_option("future.no_silent_downcasting", True)
 
@@ -354,6 +359,22 @@ def get_desired_brand_numbers(brands: list[str]) -> list[int]:
     return desired_brand_numbers
 
 
+'''
+The following function displays a countdown timer in the console.
+It takes the number of seconds as input and updates the timer every second.
+
+seconds: The number of seconds for the countdown.
+The function uses the rich library to create a live panel that updates the countdown.
+'''
+def countdown(seconds):
+    with Live(refresh_per_second=2, transient=True) as live:
+        while seconds >= 0:
+            remaining = str(timedelta(seconds=seconds))
+            live.update(Panel(f"[bold magenta]Next iteration in:[/bold magenta]\n[cyan]{remaining}[/cyan]"))
+            time.sleep(1)
+            seconds -= 1
+
+
 def main():
     # Get data for telegram notifications
     telegram_credentials = get_telegram_credentials("telegram_data.json")
@@ -400,14 +421,14 @@ def main():
     original_brands_dataframes = convert_to_dataframe(original_brands_data)
 
     # TODO: Remove this, it's just for testing purposes
-    # Delete last 2 rows from each brand dataframe
-    for brand, df in original_brands_dataframes.items():
-        original_brands_dataframes[brand] = df[:-2]
+    # Delete last 2 rows from each brand dataframe, to trigger the notification
+    #for brand, df in original_brands_dataframes.items():
+     #original_brands_dataframes[brand] = df[:-2]
 
     try:
         while True != False:
             # Once every SLEEP_TIME seconds
-            time.sleep(2)
+            countdown(SLEEP_TIME)
 
             brands_data = get_brands_data(brands_payloads)
             brands_dataframes = convert_to_dataframe(brands_data)
