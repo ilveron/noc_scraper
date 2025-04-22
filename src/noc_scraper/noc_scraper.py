@@ -245,7 +245,7 @@ def generate_message(brand: str, item_type: str, new_products: DataFrame) -> str
     elif item_type == "lens":
         item_type += "es"
     
-    message = f"New <b>{item_type}s</b> added for <b><i>{brand}</i></b> . Here's a list:"
+    message = f"New <b>{item_type}</b> added for <b><i>{brand}</i></b>\nHere's a list:"
 
     for _, row in new_products.iterrows():
         model = row["modello"]
@@ -400,14 +400,14 @@ def main():
     original_brands_dataframes = convert_to_dataframe(original_brands_data)
 
     # TODO: Remove this, it's just for testing purposes
-    # Delete last 5 rows from each brand dataframe
-    # for brand, df in original_brands_dataframes.items():
-    #    original_brands_dataframes[brand] = df[:-5]
+    # Delete last 2 rows from each brand dataframe
+    for brand, df in original_brands_dataframes.items():
+        original_brands_dataframes[brand] = df[:-2]
 
     try:
         while True != False:
             # Once every SLEEP_TIME seconds
-            time.sleep(60)
+            time.sleep(2)
 
             brands_data = get_brands_data(brands_payloads)
             brands_dataframes = convert_to_dataframe(brands_data)
@@ -433,7 +433,7 @@ def main():
                     )
                     new_products = new_products[["marca", "modello", "prezzovendita", "stato", "prenotato"]]
 
-                    table = get_table_from_additions(brand, new_products)
+                    table = get_table_from_additions(item_type, brand, new_products)
 
                     console.print(table)
                     
