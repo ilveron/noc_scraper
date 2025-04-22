@@ -204,13 +204,13 @@ def convert_to_dataframe(brands_data: dict[str, list[dict]]) -> dict[str, DataFr
 
 '''
 The following function takes a brand name and a DataFrame as input.
-It creates a table using the rich library to display the new additions for that brand.
+It creates a table using the rich library to display the new products for that brand.
 
 brand: The brand name for which the table is created.
-df: The DataFrame containing the new additions for the brand.
-The function returns a Table object containing the new additions.'''
-def get_table_from_additions(brand: str, df: DataFrame) -> Table:
-    table = Table(title = f"New additions for {brand}")
+df: The DataFrame containing the new products for the brand.
+The function returns a Table object containing the new products.'''
+def get_table_from_additions(item_type: str, brand: str, df: DataFrame) -> Table:
+    table = Table(title = f"New products for {brand}")
 
     table.add_column("Brand", justify="left", style="red")
     table.add_column("Model", justify="left", style="cyan")
@@ -229,11 +229,25 @@ def get_table_from_additions(brand: str, df: DataFrame) -> Table:
 
     return table
 
+'''
+The following function generates a message to be sent to Telegram.
+It takes the brand name, item type, and a DataFrame of new products as input.
+It constructs a message string that includes the brand name, item type, and a list of new products with their details.
 
-def generate_message(brand: str, new_additions: DataFrame) -> str:
-    message = f"You have new entries for <b><i>{brand}</i></b>, here's the list:"
+brand: The brand name for which the message is generated.
+item_type: The type of item (e.g., "camera", "lens").
+new_products: A DataFrame containing the new products for the brand.
+The function returns a string containing the formatted message.
+'''
+def generate_message(brand: str, item_type: str, new_products: DataFrame) -> str:
+    if item_type == "camera":
+        item_type += "s"
+    elif item_type == "lens":
+        item_type += "es"
+    
+    message = f"New <b>{item_type}s</b> added for <b><i>{brand}</i></b> . Here's a list:"
 
-    for _, row in new_additions.iterrows():
+    for _, row in new_products.iterrows():
         model = row["modello"]
         price = row["prezzovendita"]
         state = row["stato"]
@@ -350,6 +364,13 @@ def main():
     ### ITEM TYPE SELECTION
     print_item_types()
     desired_item_type = get_desired_item_type()
+
+    # Check if the input is valid
+    while desired_item_type not in range(0, len(ITEM_TYPES) + 1):
+        console.log(f"WARNING: Value not valid, please insert a valid one", style=WARNING_COLOR)
+        print_item_types()
+        desired_item_type = get_desired_item_type()
+
     # Exit if user wants to
     exit_program() if desired_item_type == 0 else None
 
@@ -380,7 +401,7 @@ def main():
 
     # TODO: Remove this, it's just for testing purposes
     # Delete last 5 rows from each brand dataframe
-    #for brand, df in original_brands_dataframes.items():
+    # for brand, df in original_brands_dataframes.items():
     #    original_brands_dataframes[brand] = df[:-5]
 
     try:
@@ -392,7 +413,7 @@ def main():
             brands_dataframes = convert_to_dataframe(brands_data)
 
             for brand, df in brands_dataframes.items():
-                # console.log(f"Checking new additions for the brand [i][magenta]{brand}[/magenta][/i]", style=INFO_COLOR)
+                # console.log(f"Checking new products for the brand [i][magenta]{brand}[/magenta][/i]", style=INFO_COLOR)
             
                 # Get all the ids from the fresh df and check whether there is a new addition
                 original_ids = original_brands_dataframes[brand].ID
@@ -402,26 +423,28 @@ def main():
                 diff_ids = set(ids) - set(original_ids)
 
                 if len(diff_ids) > 0:
-                    # WE HAVE NEW ADDITIONS
-                    # console.log(f"New additions for the brand [i][magenta]{brand}[/magenta][/i]:", style=NEW_COLOR)
-                    # Print new additions
-                    new_additions = df[df.ID.isin(diff_ids)].copy()
+                    # WE HAVE NEW PRODUCTS
+                    # Print new products
+                    new_products = df[df.ID.isin(diff_ids)].copy()
 
                     # Merge "prezzopromozione" and "prezzovendita" so that if the promotional price is greater than 0, it replaces the original price, otherwise it keeps the original price  
-                    new_additions["prezzovendita"] = new_additions.apply(
+                    new_products["prezzovendita"] = new_products.apply(
                         lambda row: row["prezzopromozione"] if row["prezzopromozione"] > 0 else row["prezzovendita"], axis=1
                     )
-                    new_additions = new_additions[["marca", "modello", "prezzovendita", "stato", "prenotato"]]
+                    new_products = new_products[["marca", "modello", "prezzovendita", "stato", "prenotato"]]
 
-                    table = get_table_from_additions(brand, new_additions)
+                    table = get_table_from_additions(brand, new_products)
 
                     console.print(table)
                     
                     # Notificate to telegram
-                    message = generate_message(brand, new_additions)
+                    message = generate_message(brand, item_type, new_products)
                     send_telegram_message(message, telegram_credentials["chat_id"], telegram_credentials["api_key"])
                 else:
-                    console.log(f"No new additions for the brand [i][magenta]{brand}[/magenta][/i]", style=INFO_COLOR)
+                    if item_type == "camera":
+                        console.log(f"No {item_type}s added for the brand [i][magenta]{brand}[/magenta][/i]", style=INFO_COLOR)
+                    elif item_type == "lens":
+                        console.log(f"No {item_type}es added for the brand [i][magenta]{brand}[/magenta][/i]", style=INFO_COLOR)
             
             # Update original data with the new one
             original_brands_data = brands_data
