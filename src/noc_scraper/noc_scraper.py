@@ -370,7 +370,7 @@ def countdown(seconds):
     with Live(refresh_per_second=2, transient=True) as live:
         while seconds >= 0:
             remaining = str(timedelta(seconds=seconds))
-            live.update(Panel(f"[bold magenta]Next iteration in:[/bold magenta]\n[cyan]{remaining}[/cyan]"))
+            live.update(Panel(f"[bold magenta]Next check in:[/bold magenta]\n[cyan]{remaining}[/cyan]"))
             time.sleep(1)
             seconds -= 1
 
