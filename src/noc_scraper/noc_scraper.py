@@ -52,7 +52,7 @@ def fetch_brands_list(item_type: str = "lens") -> list[str]:
         elif item_type == "lens":
             result = http.get(USED_LENSES_BRANDS_URL)
     except Exception as e:
-        console.log(f"Error fetching brands list: {e}", style="bright red")
+        console.log(f"Error fetching brands list: {e}", style="red")
         return brands
     
     soup = BeautifulSoup(result.text, "html.parser")
@@ -160,7 +160,7 @@ def get_json_data_from_request(payload: str) -> list[dict]:
         result = http.post(API_URL, data=payload, headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"})
         json_data = json.loads(result.text)["Result"]
     except Exception as e:
-        console.log(f"Error fetching JSON data: {e}", style="bright red")
+        console.log(f"Error fetching JSON data: {e}", style="red")
         return []
     return json_data
     
