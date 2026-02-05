@@ -3,7 +3,7 @@ import time
 import json
 import requests as http
 from enum import Enum
-from datetime import timedelta
+from datetime import timedelta, datetime
 from urllib.parse import quote_plus
 
 import click
@@ -116,6 +116,27 @@ class NOCMonitor:
         self.brands = brands
         self.notifier = TelegramNotifier()
         self.previous_data: dict[str, pd.DataFrame] = {}
+
+    def is_within_working_hours():
+        now = datetime.now()
+        day = now.weekday()  # 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun
+        current_time = now.strftime("%H:%M") # Stringa formato "HH:MM" per confronto facile
+
+        # Day Check: Only Tuesday to Saturday
+        # 0 is Monday, so we want 1-5
+        if not (1 <= day <= 5):
+            return False
+
+        # Time Ranges: 10:00-13:00 and 15:30-19:00 (italian timezone)
+        morning_start = "10:00"
+        morning_end = "13:00"
+        afternoon_start = "15:30"
+        afternoon_end = "19:00"
+
+        is_morning = morning_start <= current_time <= morning_end
+        is_afternoon = afternoon_start <= current_time <= afternoon_end
+
+        return is_morning or is_afternoon
 
     def fetch_current_data(self) -> dict[str, pd.DataFrame]:
         brands_data = {}
@@ -309,9 +330,14 @@ def main(cli_type, cli_brands):
             monitor.check_for_updates()
             
         while True:
-            countdown_timer(SLEEP_TIME)
-            # console.log("Checking for updates...", style="dim")
-            monitor.check_for_updates()
+            if not NOCMonitor.is_within_working_hours():
+                console.print("\n[dim]Outside working hours. Next check will resume during working hours.[/dim]", style=STYLE_INFO)
+                time.sleep(300)  # Sleep for 5 minutes before re-checking time
+                continue
+            else:
+                countdown_timer(SLEEP_TIME)
+                # console.log("Checking for updates...", style="dim")
+                monitor.check_for_updates()
             
     except KeyboardInterrupt:
         console.print("\n[bold red]Stopping monitor. Goodbye![/bold red]")
