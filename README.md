@@ -1,93 +1,144 @@
+# NOC Scraper
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+**NOC Monitor** e' uno strumento CLI per il monitoraggio automatizzato della sezione "Usato" del sito *New Old Camera*. Il software rileva nuovi prodotti (Fotocamere o Obiettivi) per i marchi specificati e invia notifiche tramite Telegram.
+
+---
+
+## Documentazione in Italiano
+
+### Funzionalita'
+* **Monitoraggio costante:** Controllo automatico del sito a intervalli regolari (default: 60 secondi).
+* **Modalita' Ibrida:** Utilizzabile sia tramite menu interattivo che via argomenti da riga di comando (CLI).
+* **Filtri:** Monitoraggio selettivo per brand (es. solo "Leica" o "Nikon").
+* **Notifiche Telegram:** Alert contenenti modello, stato e prezzo.
+* **Resilienza:** Gestione automatica degli errori di connessione.
+
+### Installazione
+
+Il progetto utilizza **Poetry** per la gestione delle dipendenze. Assicurati di averlo installato sul tuo sistema.
+
+1.  **Clona il repository:**
+    ```bash
+    git clone https://github.com/ilveron/noc_scraper.git
+    cd noc-scraper
+    ```
+
+2.  **Installa le dipendenze:**
+    ```bash
+    poetry install
+    ```
+
+### Configurazione
+
+Per abilitare le notifiche e' necessario configurare un bot Telegram.
+
+1.  Rinomina il file `.env.example` in `.env` (se presente) o creane uno nuovo nella root del progetto.
+2.  Inserisci le credenziali ottenute da BotFather:
+
+```ini
+TELEGRAM_API_KEY=tuo_token_qui
+TELEGRAM_CHAT_ID=tuo_chat_id_qui
 ```
-███╗   ██╗ ██████╗  ██████╗    ███████╗ ██████╗██████╗  █████╗ ██████╗ ███████╗██████╗ 
-████╗  ██║██╔═══██╗██╔════╝    ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
-██╔██╗ ██║██║   ██║██║         ███████╗██║     ██████╔╝███████║██████╔╝█████╗  ██████╔╝
-██║╚██╗██║██║   ██║██║         ╚════██║██║     ██╔══██╗██╔══██║██╔═══╝ ██╔══╝  ██╔══██╗
-██║ ╚████║╚██████╔╝╚██████╗    ███████║╚██████╗██║  ██║██║  ██║██║     ███████╗██║  ██║
-╚═╝  ╚═══╝ ╚═════╝  ╚═════╝    ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝
-                                                           by Alessandro Monetti - 2025
-```
 
-# ITA
-***Benvenuti!***
+### Utilizzo
 
-Questo software nasce dalla necessità di cercare una buona offerta per un obiettivo per conto di un amico su [NewOldCamera](https://www.newoldcamera.com/). 
+E' possibile avviare lo script in due modalita' tramite `poetry`.
 
-Avendo già perso almeno un'occasione per segnalargli un affare, ho deciso con la scusa di mettermi alla prova e scrivere un web scraper con un semplice sistema di notifiche via bot telegram.
-
-## Strumenti
-- **Python**
-- **BeautifulSoup**: scraping lista dei marchi
-- **Requests**: richieste HTTP
-- **Pandas**: gestione dei dati
-- **Telegram**: invio notifiche
-
-## Configurazione
-### Virtual Environment
-L'ambiente virtuale è stato creato con [poetry](https://python-poetry.org/), un gestore di pacchetti per Python. Per installarlo, puoi seguire le istruzioni ufficiali [qui](https://python-poetry.org/docs/#installation).
-
-Per installare le dipendenze, esegui il seguente comando (assicurati di essere nella cartella del progetto):
+#### 1. Modalita' Interattiva
+Avvia lo script senza argomenti per visualizzare il menu di selezione.
 ```bash
-poetry install
+poetry run python main.py
 ```
 
+#### 2. Modalita' CLI (Automazione)
+Passa gli argomenti direttamente da riga di comando per saltare i menu. Utile per cronjob o esecuzioni rapide.
 
-## Esecuzione
-Per attivare l'ambiente virtuale, esegui:
+* **Sintassi:**
+    ```bash
+    poetry run python main.py --type [camera|lens] --brands "Brand1, Brand2"
+    ```
+
+* **Esempi:**
+    ```bash
+    # Monitora fotocamere Sony e Nikon Z
+    poetry run python main.py --type camera --brands "Sony, Nikon Z"
+
+    # Monitora obiettivi Canon EOS R
+    poetry run python main.py --type lens --brands "Canon EOS R"
+    ```
+
+---
+
+## English Documentation
+
+### Features
+* **Continuous Monitoring:** Automatically checks the website at regular intervals (default: 60s).
+* **Hybrid Mode:** Works via interactive menus or Command Line Arguments (CLI).
+* **Filters:** Monitor specific brands only.
+* **Telegram Alerts:** Notifications include model, condition, and price.
+* **Error Handling:** Automatically manages connection timeouts and retries.
+
+### Installation
+
+This project uses **Poetry** for dependency management.
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/ilveron/noc_scraper.git
+    cd noc-scraper
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    poetry install
+    ```
+
+### Configuration
+
+To receive notifications, configure your Telegram Bot credentials.
+
+1.  Create a `.env` file in the project root.
+2.  Add your API Key and Chat ID:
+
+```ini
+TELEGRAM_API_KEY=your_token_here
+TELEGRAM_CHAT_ID=your_chat_id_here
+```
+
+### Usage
+
+Run the script using `poetry`.
+
+#### 1. Interactive Mode
+Run without arguments to launch the selection menu.
 ```bash
-poetry env activate
+poetry run python main.py
 ```
 
-Per eseguire il programma, utilizza il comando (assicurati di lanciarlo all'interno di `src/noc_scraper`):
-```bash
-poetry run python noc_scraper.py
-```
+#### 2. CLI Mode (Automation)
+Pass arguments to skip the interactive prompts.
 
-### Bot telegram
-Per utilizzare il bot telegram è necessario creare un bot e ottenere un token. Per farlo, segui questi passaggi:
+* **Syntax:**
+    ```bash
+    poetry run python main.py --type [camera|lens] --brands "Brand1, Brand2"
+    ```
 
-1. Apri Telegram e cerca il bot "BotFather".
-2. Invia il comando `/newbot` e segui le istruzioni per creare un nuovo bot.
-3. Una volta creato il bot, riceverai un token di accesso. Copia questo token e incollalo nel file `telegram_data.json` nel seguente formato
-```json
-{
-    "chat_id": "YOUR_CHAT_ID",
-    "api_key": "YOUR_API_KEY"
-}
-```
-4. Il `chat_id` può essere anche l'handle del tuo profilo telegram, ad esempio `@my_handle`. Il bot invierà un messaggio privato al tuo profilo.
+* **Examples:**
+    ```bash
+    # Track Sony and Nikon cameras
+    poetry run python main.py --type camera --brands "Sony, Nikon"
 
+    # Track Leica lenses
+    poetry run python main.py --type lens --brands "Leica"
+    ```
 
-## Il software (WORK IN PROGRESS)
-### Scelta tipologia di prodotto
-Una volta avviato il programma, si presenta un menu con le seguenti opzioni:
-![banner](/imgs/program_start.png)
+---
 
-0. **Exit**: per uscire dal programma.
-1. **Cameras**: per mostrare i marchi delle fotocamere.
-2. **Lenses**: per mostrare i marchi degli obiettivi.
+### Disclaimer
 
-Ogni ulteriore input è ignorato ed è richiesto di selezionare un'opzione valida.
+**IT:** Questo software è stato creato a scopo didattico. L'autore non è affiliato con NewOldCamera. Utilizzare con responsabilità per non sovraccaricare il server.
 
-### Scelta marchio
-Una volta selezionata la tipologia di prodotto, viene mostrato un elenco di marchi disponibili. Ad esempio, se si sceglie "Cameras", verrà visualizzato un elenco di marchi di fotocamere.
-![brand selection](/imgs/brands_selection.png)
-
-I marchi sono numerati e l'utente può selezionare un marchio inserendo il numero corrispondente. L'utente può anche digitare più marchi separati da uno spazio. 
-
-Ad esempio, se si desidera selezionare i marchi 1 e 3, è possibile digitare `"1 3"` e premere invio. Se si desidera selezionare solo un marchio, è possibile digitare il numero corrispondente e premere invio.
-
-Se non è valido almeno uno dei numeri inseriti, è visualizzato un avviso ed è richiesto di selezionare almeno un marchio valido.
-
-I marchi non validi sono ignorati e il programma procede al tracking dei marchi validi selezionati.
-
-### Tracking
-Una volta selezionati i marchi, il programma inizia a monitorare i nuovi prodotti. Durante il monitoraggio, il programma verifica se ci sono nuovi prodotti disponibili per i marchi selezionati.
-![tracking](/imgs/select_type_and_brands.png)
-
-### Nuove aggiunte
-Nel caso in cui in uno dei marchi selezionati siano stati aggiunti nuovi prodotti, verrà visualizzata una tabella con i dettagli dei nuovi prodotti.
-
-![new products](/imgs/new_additions.png)
-
-Se vengono trovati nuovi prodotti, il programma invia una notifica al bot telegram con i dettagli dei nuovi prodotti.
+**EN:** This software is for educational purposes only. The author is not affiliated with NewOldCamera. Please use responsibly to avoid server overload.
