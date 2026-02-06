@@ -9,9 +9,9 @@
 
 ## Documentazione in Italiano
 
-### Funzionalita'
+### Funzionalità
 * **Monitoraggio costante:** Controllo automatico del sito a intervalli regolari (default: 60 secondi).
-* **Modalita' Ibrida:** Utilizzabile sia tramite menu interattivo che via argomenti da riga di comando (CLI).
+* **Modalità Ibrida:** Utilizzabile sia tramite menu interattivo che via argomenti da riga di comando (CLI).
 * **Filtri:** Monitoraggio selettivo per brand (es. solo "Leica" o "Nikon").
 * **Notifiche Telegram:** Alert contenenti modello, stato e prezzo.
 * **Resilienza:** Gestione automatica degli errori di connessione.
@@ -33,7 +33,7 @@ Il progetto utilizza **Poetry** per la gestione delle dipendenze. Assicurati di 
 
 ### Configurazione
 
-Per abilitare le notifiche e' necessario configurare un bot Telegram.
+Per abilitare le notifiche è necessario configurare un bot Telegram.
 
 1.  Rinomina il file `.env.example` in `.env` (se presente) o creane uno nuovo nella root del progetto.
 2.  Inserisci le credenziali ottenute da BotFather:
@@ -45,15 +45,15 @@ TELEGRAM_CHAT_ID=tuo_chat_id_qui
 
 ### Utilizzo
 
-E' possibile avviare lo script in due modalita' tramite `poetry`.
+È possibile avviare lo script in due modalità tramite `poetry`.
 
-#### 1. Modalita' Interattiva
+#### 1. Modalità Interattiva
 Avvia lo script senza argomenti per visualizzare il menu di selezione.
 ```bash
 poetry run python main.py
 ```
 
-#### 2. Modalita' CLI (Automazione)
+#### 2. Modalità CLI (Automazione)
 Passa gli argomenti direttamente da riga di comando per saltare i menu. Utile per cronjob o esecuzioni rapide.
 
 * **Sintassi:**
