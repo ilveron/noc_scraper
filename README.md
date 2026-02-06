@@ -3,7 +3,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-**NOC Monitor** e' uno strumento CLI per il monitoraggio automatizzato della sezione "Usato" del sito *New Old Camera*. Il software rileva nuovi prodotti (Fotocamere o Obiettivi) per i marchi specificati e invia notifiche tramite Telegram.
+**NOC Scraper** e' uno strumento CLI per il monitoraggio automatizzato della sezione "Usato" del sito *New Old Camera*. Il software rileva nuovi prodotti (Fotocamere o Obiettivi) per i marchi specificati e invia notifiche tramite Telegram.
 
 ---
 
