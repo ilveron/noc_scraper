@@ -1,0 +1,1 @@
+Powershell.exe poetry run python -m noc_scraper.script
