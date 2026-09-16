@@ -68,54 +68,67 @@ class TelegramNotifier:
         self.creds = self._get_credentials(config_file)
 
     def _get_credentials(self, filename: str) -> dict | None:
-        # Priority: Environment Variables -> JSON File
+        raw_chat_ids = os.getenv("TELEGRAM_CHAT_IDS", "")
+
+        # Split and sanitize chat IDs from environment variable
+        chat_ids = [x.strip() for x in raw_chat_ids.split(",") if x.strip()]
+
         creds = {
-            "chat_id": os.getenv("TELEGRAM_CHAT_ID"),
+            "chat_ids": chat_ids,
             "api_key": os.getenv("TELEGRAM_API_KEY"),
         }
 
+        # Priority: Environment Variables -> JSON File
+
         # Fallback to local JSON file if environment variables are unset
-        if not creds["chat_id"] or not creds["api_key"]:
+        if not creds["chat_ids"] or not creds["api_key"]:
             file_path = os.path.join(os.path.dirname(__file__), filename)
             if os.path.exists(file_path):
                 try:
                     with open(file_path, "r", encoding="utf-8") as f:
                         file_data = json.load(f)
-                        if not creds["chat_id"]:
-                            creds["chat_id"] = file_data.get("chat_id")
+                        if not creds["chat_ids"]:
+                            creds["chat_ids"] = file_data.get("chat_ids", [])
                         if not creds["api_key"]:
                             creds["api_key"] = file_data.get("api_key")
                 except Exception as e:
                     console.print(f"[Warning] Failed to read Telegram configuration file: {e}", style=STYLE_WARN)
 
-        if not creds["chat_id"] or not creds["api_key"]:
+        if len(creds["chat_ids"]) == 0 or not creds["api_key"]:
             console.print("[Warning] Telegram credentials missing. Notifications disabled.", style=STYLE_WARN)
             return None
         return creds
 
-    def send_message(self, message: str):
+    def send_messages(self, message: str):
         if not self.creds:
             return
 
-        url = f"https://api.telegram.org/bot{self.creds['api_key']}/sendMessage"
-        payload = {
-            "chat_id": self.creds["chat_id"],
-            "text": message,
-            "parse_mode": "HTML",
-        }
-        try:
-            resp = http.post(url, json=payload, timeout=10)
-            if not resp.ok:
-                console.log(f"Telegram API Error ({resp.status_code}): {resp.text}", style=STYLE_ERR)
-            else:
-                console.log("Telegram notification sent successfully.", style=STYLE_INFO)
-        except Exception as e:
-            console.log(f"Connection error while sending Telegram message: {e}", style=STYLE_ERR)
+        for chat_id in self.creds["chat_ids"]:
+            url = f"https://api.telegram.org/bot{self.creds['api_key']}/sendMessage"
+            payload = {
+                "chat_id": chat_id,
+                "text": message,
+                "parse_mode": "HTML",
+            }
+            try:
+                resp = http.post(url, json=payload, timeout=10)
+                if not resp.ok:
+                    console.log(f"Telegram API Error ({resp.status_code}): {resp.text}", style=STYLE_ERR)
+                else:
+                    console.log("Telegram notification sent successfully.", style=STYLE_INFO)
+            except Exception as e:
+                console.log(f"Connection error while sending Telegram message: {e}", style=STYLE_ERR)
 
     def generate_alert_messages(self, brand: str, item_type: ItemType, new_products: pd.DataFrame) -> list[str]:
         """Generates sanitized messages split into chunks under Telegram's 4096-character limit."""
         type_str = item_type.cli_name + ("s" if item_type == ItemType.CAMERA else "es")
-        header = f"🚨 New <b>{type_str}</b> added for <b><i>{html.escape(brand)}</i></b>:\n"
+        
+
+        if type_str == "cameras":
+            header = f"📷 "
+        elif type_str == "lenses":
+            header = f"🔎 "
+        header += f"<b>New {type_str} for {brand}</b>:\n"
 
         messages = []
         current_msg = header
@@ -158,7 +171,7 @@ class NOCMonitor:
             return False
 
         # Store shift intervals (half an hour buffer added for safety)
-        morning_start, morning_end = "9:30", "13:30"
+        morning_start, morning_end = "09:30", "13:30"
         afternoon_start, afternoon_end = "15:00", "19:30"
 
         is_morning = morning_start <= current_time <= morning_end
@@ -249,7 +262,7 @@ class NOCMonitor:
         # 2. Telegram Notifications
         messages = self.notifier.generate_alert_messages(brand, self.item_type, new_products)
         for msg in messages:
-            self.notifier.send_message(msg)
+            self.notifier.send_messages(msg)
             time.sleep(1)
 
 
