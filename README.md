@@ -39,8 +39,8 @@ Per abilitare le notifiche è necessario configurare un bot Telegram.
 2.  Inserisci le credenziali ottenute da BotFather:
 
 ```ini
-TELEGRAM_API_KEY=tuo_token_qui
-TELEGRAM_CHAT_ID=tuoi_chat_id_qui,separati_da_virgola  # (uno per ogni chat in cui vuoi ricevere notifiche)
+TELEGRAM_API_KEY="tuo_token_qui"
+TELEGRAM_CHAT_IDS="tuoi_chat_id_qui,separati_da_virgola"  # (uno per ogni chat in cui vuoi ricevere notifiche)
 ```
 
 ### Utilizzo
@@ -104,8 +104,8 @@ To receive notifications, configure your Telegram Bot credentials.
 2.  Add your API Key and Chat ID:
 
 ```ini
-TELEGRAM_API_KEY=your_token_here
-TELEGRAM_CHAT_ID=your_chat_ids_here,separated_by_commas  # (one for each chat you want to receive notifications in)
+TELEGRAM_API_KEY="your_token_here"
+TELEGRAM_CHAT_IDS="your_chat_ids_here,separated_by_commas"  # (one for each chat you want to receive notifications in)
 ```
 
 ### Usage
